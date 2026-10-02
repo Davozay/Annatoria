@@ -1,0 +1,253 @@
+      /* ============================================================
+       CONTACT PAGE — page-specific
+       ============================================================ */
+      .icon_convo {
+     
+        display: flex;
+        width:75px;
+        height:75px;
+        border-radius: 50%;
+        /* background: var(--anna-bg-2); */
+        border: 1px solid var(--anna-line-2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        line-height: 1;
+
+
+      }
+
+
+      .grid-top-button{
+        display: grid;
+        grid-template-columns: repeat(2fr 1fr);
+      }
+
+      /* .testing{
+          display: grid;
+        grid-template-columns: 80px 1fr;
+      } */
+
+      .ann-contact {
+        min-height: 100vh;
+        padding: calc(var(--anna-space-8) + 40px) var(--anna-gutter) var(--anna-space-8);
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .ann-contact__header {
+        margin-bottom: var(--anna-space-6);
+        padding-bottom: var(--anna-space-4);
+        border-bottom: 1px solid var(--anna-line);
+      }
+
+      .ann-contact__title {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-2xl);
+        font-weight: 700;
+        line-height: var(--anna-lh-tight);
+        letter-spacing: -0.03em;
+        color: var(--anna-text);
+        margin: 0 0 var(--anna-space-3);
+      }
+
+      .ann-contact__intro {
+        font-size: var(--anna-fs-base);
+        line-height: var(--anna-lh-base);
+        color: var(--anna-text-2);
+        max-width: 60ch;
+        margin: 0 0 var(--anna-space-2);
+      }
+
+      .ann-contact__intro strong {
+        color: var(--anna-text);
+        font-weight: 500;
+      }
+
+      .ann-contact__from {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-mid);
+        color: var(--anna-text-3);
+        margin-top: var(--anna-space-2);
+      }
+
+      .ann-contact__from strong {
+        color: var(--anna-text-2);
+        font-weight: 500;
+      }
+
+      /* Step indicator */
+      .ann-steps {
+        display: flex;
+        align-items: center;
+        gap: var(--anna-space-3);
+        margin-bottom: var(--anna-space-5);
+      }
+
+      .ann-step {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        color: var(--anna-text-3);
+        transition: color var(--anna-dur) var(--anna-ease);
+      }
+
+      .ann-step__num {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1px solid var(--anna-line-2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        transition:
+          background-color var(--anna-dur) var(--anna-ease),
+          border-color var(--anna-dur) var(--anna-ease),
+          color var(--anna-dur) var(--anna-ease);
+      }
+
+      .ann-step.is-active {
+        color: var(--anna-text);
+      }
+
+      .ann-step.is-active .ann-step__num {
+        background: var(--anna-accent);
+        border-color: var(--anna-accent);
+        color: #1a1206;
+      }
+
+      .ann-step.is-done .ann-step__num {
+        background: var(--anna-text);
+        border-color: var(--anna-text);
+        color: #0a0a0a;
+      }
+
+      .ann-step__line {
+        flex: 1;
+        height: 1px;
+        background: var(--anna-line);
+        min-width: 24px;
+      }
+
+      /* Form grid — two columns on wider screens */
+      .ann-form__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--anna-space-3);
+      }
+
+      @media (max-width: 640px) {
+        .ann-form__row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Radio / checkbox vertical stack variant */
+      .ann-radio-group.stack {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        width: 100%;
+      }
+
+      /* Every radio option becomes a clean full-width row:
+   bullet on the left, label beside it, click anywhere */
+      .ann-radio {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: var(--anna-r-sm);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition:
+          background-color var(--anna-dur-fast) var(--anna-ease),
+          border-color var(--anna-dur-fast) var(--anna-ease);
+        line-height: 1.35;
+      }
+
+      .ann-radio:hover {
+        background: var(--anna-bg-2);
+        border-color: var(--anna-line);
+      }
+
+      .ann-radio input[type="radio"] {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--anna-accent);
+        cursor: pointer;
+      }
+
+      .ann-radio>span {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* Terms block gets a bit more room */
+      .ann-terms {
+        max-height: none;
+      }
+
+      .ann-terms .notice {
+        display: block;
+        margin-top: var(--anna-space-3);
+        padding-top: var(--anna-space-3);
+        border-top: 1px solid var(--anna-line);
+        text-transform: uppercase;
+        letter-spacing: var(--anna-tracking-wide);
+        font-size: var(--anna-fs-xs);
+      }
+
+      /* Big yes/no commitment */
+      .ann-commit {
+        background: var(--anna-bg-2);
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-md);
+        padding: var(--anna-space-4);
+        margin-bottom: var(--anna-space-3);
+      }
+
+      .ann-commit p {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+        line-height: 1.65;
+        margin: 0 0 10px;
+      }
+
+      .ann-commit p:last-of-type {
+        margin-bottom: var(--anna-space-3);
+      }
+
+      .ann-commit strong {
+        color: var(--anna-text);
+      }
+
+      /* Submit-status message */
+      [data-form-status] {
+        display: block;
+        margin-top: var(--anna-space-3);
+        font-size: var(--anna-fs-sm);
+        color: var(--anna-accent);
+        min-height: 1.5em;
+      }
+
+      [data-form-status].is-error {
+        color: var(--anna-danger);
+      }
+
+      [data-form-status].is-success {
+        color: #6cd28a;
+      }

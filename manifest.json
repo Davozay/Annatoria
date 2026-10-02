@@ -1,0 +1,13 @@
+{
+  "name": "Annatoria",
+  "short_name": "Annatoria",
+  "description": "Multi-award-winning music artist, songwriter, and influencer.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "./assets/mains/Anna_Loading-page1.png", "sizes": "512x512", "type": "image/png" }
+    
+  ]
+}

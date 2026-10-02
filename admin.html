@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Team Annatoria</title>
+    <meta
+      name="description"
+      content="Private admin dashboard for Team Annatoria."
+    />
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link
+      href="./assets/mains/Anna_Loading-page1.png"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./annatoria.css" />
+    <link rel="stylesheet" href="./admin.css" />
+
+    <style>
+      html {
+        background-color: var(--anna-bg);
+      }
+      body.body-5 {
+        background-color: var(--anna-bg);
+      }
+
+      /* ============================================================
+       THEME TOGGLE — animated switch
+       ============================================================ */
+      .ann-theme-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .ann-theme-switch input {
+        /* Hide the native checkbox but keep it accessible */
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        pointer-events: none;
+      }
+
+      /* The track */
+      .ann-theme-switch__track {
+        position: relative;
+        width: 68px;
+        height: 36px;
+        border-radius: 999px;
+        background: var(--anna-bg-3);
+        border: 1px solid var(--anna-line-2);
+        transition:
+          background-color var(--anna-dur) var(--anna-ease),
+          border-color var(--anna-dur) var(--anna-ease);
+        overflow: hidden;
+        flex: 0 0 auto;
+      }
+
+      /* Starry texture behind the moon side */
+      .ann-theme-switch__track::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(
+            1px 1px at 15% 30%,
+            rgba(255, 255, 255, 0.9),
+            transparent 60%
+          ),
+          radial-gradient(
+            1px 1px at 28% 70%,
+            rgba(255, 255, 255, 0.7),
+            transparent 60%
+          ),
+          radial-gradient(
+            1px 1px at 45% 20%,
+            rgba(255, 255, 255, 0.8),
+            transparent 60%
+          ),
+          radial-gradient(
+            1.5px 1.5px at 60% 60%,
+            rgba(255, 255, 255, 0.85),
+            transparent 60%
+          );
+        opacity: 0;
+        transition: opacity var(--anna-dur) var(--anna-ease);
+        pointer-events: none;
+      }
+      .ann-theme-switch input:not(:checked) ~ .ann-theme-switch__track::before {
+        opacity: 1;
+      }
+
+      /* The knob */
+      .ann-theme-switch__knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--anna-text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--anna-bg);
+        transition:
+          left var(--anna-dur) var(--anna-ease-out),
+          background-color var(--anna-dur) var(--anna-ease),
+          color var(--anna-dur) var(--anna-ease),
+          transform var(--anna-dur) var(--anna-ease-out);
+        will-change: left, transform;
+      }
+
+      .ann-theme-switch__icon {
+        display: block;
+        width: 16px;
+        height: 16px;
+        transition:
+          transform var(--anna-dur-slow) var(--anna-ease-out),
+          opacity var(--anna-dur-fast) var(--anna-ease);
+        position: absolute;
+      }
+
+      .ann-theme-switch__icon.moon {
+        opacity: 1;
+        transform: rotate(0deg);
+      }
+      .ann-theme-switch__icon.sun {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0.6);
+      }
+
+      /* Checked state */
+      .ann-theme-switch input:checked ~ .ann-theme-switch__track {
+        background: var(--anna-accent);
+        border-color: var(--anna-accent);
+      }
+      .ann-theme-switch
+        input:checked
+        ~ .ann-theme-switch__track
+        .ann-theme-switch__knob {
+        left: 37px;
+        background: #ffffff;
+        color: #b8741a;
+      }
+      .ann-theme-switch
+        input:checked
+        ~ .ann-theme-switch__track
+        .ann-theme-switch__icon.moon {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.6);
+      }
+      .ann-theme-switch
+        input:checked
+        ~ .ann-theme-switch__track
+        .ann-theme-switch__icon.sun {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      }
+
+      /* Focus ring for keyboard users */
+      .ann-theme-switch input:focus-visible ~ .ann-theme-switch__track {
+        outline: 2px solid var(--anna-accent);
+        outline-offset: 3px;
+      }
+
+      /* Hover animation — slight pulse on the knob */
+      .ann-theme-switch:hover .ann-theme-switch__knob {
+        transform: scale(1.06);
+      }
+
+      /* Label text beside the switch */
+      .ann-theme-switch__label {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-sm);
+        color: var(--anna-text);
+        letter-spacing: var(--anna-tracking-mid);
+        transition: color var(--anna-dur-fast) var(--anna-ease);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ann-theme-switch__track,
+        .ann-theme-switch__knob,
+        .ann-theme-switch__icon,
+        .ann-theme-switch__track::before {
+          transition: none !important;
+        }
+      }
+      /* ============================================================
+       ADMIN — page-specific
+       ============================================================ */
+
+      .ann-admin-page {
+        min-height: 100vh;
+        padding: calc(var(--anna-space-8) + 40px) var(--anna-gutter)
+          var(--anna-space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        overscroll-behavior: contain;
+      }
+
+      /* ---------- Topbar ---------- */
+      .ann-admin__topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: var(--anna-space-4);
+        margin-bottom: var(--anna-space-4);
+        padding-bottom: var(--anna-space-4);
+        border-bottom: 1px solid var(--anna-line);
+        flex-wrap: wrap;
+      }
+      .ann-admin__title-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 6px;
+      }
+      .ann-admin__avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--anna-bg-2);
+        border: 1px solid var(--anna-line-2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        line-height: 1;
+      }
+      .ann-admin__title {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-2xl);
+        font-weight: 700;
+        line-height: var(--anna-lh-tight);
+        letter-spacing: -0.03em;
+        color: var(--anna-text);
+        margin: 0;
+      }
+      .ann-admin__subtitle {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+      }
+
+      /* ---------- Tabs ---------- */
+      .ann-tabs {
+        display: flex;
+        gap: 4px;
+        border-bottom: 1px solid var(--anna-line);
+        margin-bottom: var(--anna-space-5);
+        overflow-x: auto;
+      }
+      .ann-tab {
+        position: relative;
+        padding: 14px 20px;
+        background: transparent;
+        border: 0;
+        color: var(--anna-text-2);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: color var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-tab::after {
+        content: "";
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: -1px;
+        height: 2px;
+        background: var(--anna-accent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform var(--anna-dur) var(--anna-ease-out);
+      }
+      .ann-tab:hover {
+        color: var(--anna-text);
+      }
+      .ann-tab.is-active {
+        color: var(--anna-text);
+      }
+      .ann-tab.is-active::after {
+        transform: scaleX(1);
+      }
+
+      .ann-tab-panel {
+        display: none;
+      }
+      .ann-tab-panel.is-active {
+        display: block;
+      }
+
+      /* ---------- Toolbar ---------- */
+      .ann-admin__toolbar {
+        display: flex;
+        gap: var(--anna-space-3);
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: var(--anna-space-4);
+      }
+      .ann-admin__search {
+        flex: 1 1 260px;
+        max-width: 420px;
+        position: relative;
+      }
+      .ann-admin__search input {
+        width: 100%;
+        background: var(--anna-bg-2);
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-pill);
+        color: var(--anna-text);
+        padding: 12px 18px 12px 42px;
+        font-size: var(--anna-fs-sm);
+        font-family: var(--anna-font-body);
+        transition: border-color var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-admin__search input:focus {
+        outline: 0;
+        border-color: var(--anna-accent);
+      }
+      .ann-admin__search svg {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: var(--anna-text-3);
+        pointer-events: none;
+      }
+      .ann-admin__filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .ann-admin__filter {
+        padding: 8px 14px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line);
+        background: transparent;
+        color: var(--anna-text-2);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-admin__filter:hover {
+        border-color: var(--anna-line-2);
+        color: var(--anna-text);
+      }
+      .ann-admin__filter.is-active {
+        border-color: var(--anna-accent);
+        color: var(--anna-accent);
+      }
+      .ann-admin__filter .count {
+        color: var(--anna-text-3);
+        margin-left: 6px;
+      }
+
+      /* ---------- Table ---------- */
+      .ann-admin__table-wrap {
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-lg);
+        background: var(--anna-surface);
+        overflow: hidden;
+      }
+      .ann-admin__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--anna-fs-sm);
+      }
+      .ann-admin__table th,
+      .ann-admin__table td {
+        text-align: left;
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--anna-line);
+        vertical-align: middle;
+      }
+      .ann-admin__table th {
+        background: var(--anna-bg-2);
+        color: var(--anna-text-3);
+        font-weight: 500;
+        font-family: var(--anna-font-display);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        font-size: var(--anna-fs-xs);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+      .ann-admin__table tbody tr {
+        cursor: pointer;
+        transition: background-color var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-admin__table tbody tr:hover {
+        background: var(--anna-bg-2);
+      }
+      .ann-admin__table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .ann-admin__name {
+        color: var(--anna-text);
+        font-weight: 500;
+      }
+      .ann-admin__email {
+        color: var(--anna-text-3);
+        font-size: var(--anna-fs-xs);
+        margin-top: 2px;
+      }
+      .ann-admin__date {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-xs);
+        white-space: nowrap;
+      }
+
+      .ann-admin__status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: var(--anna-r-pill);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-mid);
+        border: 1px solid var(--anna-line-2);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .ann-admin__status::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .ann-admin__status[data-status="new"] {
+        color: var(--anna-accent);
+        border-color: var(--anna-accent);
+      }
+      .ann-admin__status[data-status="read"] {
+        color: var(--anna-text-2);
+      }
+      .ann-admin__status[data-status="accepted"] {
+        color: #6cd28a;
+        border-color: #6cd28a;
+      }
+      .ann-admin__status[data-status="declined"] {
+        color: var(--anna-danger);
+        border-color: var(--anna-danger);
+      }
+
+      .ann-admin__row-actions {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .ann-admin__icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line);
+        background: transparent;
+        color: var(--anna-text-2);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-admin__icon-btn:hover {
+        color: var(--anna-text);
+        border-color: var(--anna-text);
+      }
+      .ann-admin__icon-btn.is-danger:hover {
+        color: var(--anna-danger);
+        border-color: var(--anna-danger);
+      }
+      .ann-admin__icon-btn svg {
+        width: 14px;
+        height: 14px;
+        display: block;
+      }
+
+      .ann-admin__empty {
+        padding: var(--anna-space-7) var(--anna-space-4);
+        text-align: center;
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+      }
+
+      /* ---------- Login ---------- */
+      .ann-admin__login-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--anna-space-4);
+      }
+      .ann-admin__login {
+        max-width: 420px;
+        width: 100%;
+        padding: var(--anna-space-6) var(--anna-space-5);
+        background: var(--anna-surface);
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-lg);
+      }
+      .ann-admin__login h1 {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xl);
+        color: var(--anna-text);
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+      }
+      .ann-admin__login p {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+        margin: 0 0 var(--anna-space-4);
+      }
+      .ann-admin__login .ann-field {
+        margin-bottom: var(--anna-space-3);
+      }
+      .ann-admin__login .ann-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .ann-admin__login-error {
+        color: var(--anna-danger);
+        font-size: var(--anna-fs-sm);
+        margin-top: var(--anna-space-2);
+        min-height: 1.5em;
+      }
+
+      /* ---------- Drawer ---------- */
+      .ann-drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9400;
+        background: rgba(5, 5, 5, 0.6);
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--anna-dur) var(--anna-ease);
+      }
+      .ann-drawer-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .ann-drawer {
+        position: fixed;
+        inset: 0 0 0 auto;
+        width: min(600px, 100vw);
+        z-index: 9500;
+        background: var(--anna-bg-2);
+        border-left: 1px solid var(--anna-line);
+        transform: translateX(100%);
+        transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .ann-drawer.is-open {
+        transform: none;
+      }
+      .ann-drawer__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--anna-space-3);
+        padding: var(--anna-space-5) var(--anna-space-4) var(--anna-space-4);
+        border-bottom: 1px solid var(--anna-line);
+      }
+      .ann-drawer__title {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xl);
+        color: var(--anna-text);
+        margin: 0 0 6px;
+        letter-spacing: -0.02em;
+        word-break: break-word;
+      }
+      .ann-drawer__subtitle {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+      }
+      .ann-drawer__close {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line-2);
+        background: transparent;
+        color: var(--anna-text);
+        cursor: pointer;
+        flex: 0 0 auto;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-drawer__close:hover {
+        background: var(--anna-text);
+        color: #0a0a0a;
+      }
+      .ann-drawer__body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        padding: var(--anna-space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--anna-space-3);
+      }
+      .ann-drawer__group {
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-md);
+        background: var(--anna-surface);
+        overflow: hidden;
+      }
+      .ann-drawer__group-title {
+        padding: 12px 16px;
+        background: var(--anna-bg-3);
+        border-bottom: 1px solid var(--anna-line);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        color: var(--anna-text-3);
+      }
+      .ann-drawer__rows {
+        padding: 6px 0;
+      }
+      .ann-drawer__row {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 16px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--anna-line);
+      }
+      .ann-drawer__row:last-child {
+        border-bottom: 0;
+      }
+      .ann-drawer__row dt {
+        color: var(--anna-text-3);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-mid);
+        text-transform: uppercase;
+        align-self: start;
+        padding-top: 2px;
+      }
+      .ann-drawer__row dd {
+        margin: 0;
+        color: var(--anna-text);
+        font-size: var(--anna-fs-sm);
+        line-height: 1.6;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+      .ann-drawer__row dd a {
+        color: var(--anna-accent);
+      }
+
+      .ann-drawer__status-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .ann-drawer__status-btn {
+        padding: 8px 14px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line);
+        background: transparent;
+        color: var(--anna-text-2);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-drawer__status-btn:hover {
+        border-color: var(--anna-line-2);
+        color: var(--anna-text);
+      }
+      .ann-drawer__status-btn.is-active[data-set-status="new"] {
+        background: var(--anna-accent);
+        color: #1a1206;
+        border-color: var(--anna-accent);
+      }
+      .ann-drawer__status-btn.is-active[data-set-status="read"] {
+        background: var(--anna-text);
+        color: #0a0a0a;
+        border-color: var(--anna-text);
+      }
+      .ann-drawer__status-btn.is-active[data-set-status="accepted"] {
+        background: #6cd28a;
+        color: #0a2a13;
+        border-color: #6cd28a;
+      }
+      .ann-drawer__status-btn.is-active[data-set-status="declined"] {
+        background: var(--anna-danger);
+        color: #2a0a0a;
+        border-color: var(--anna-danger);
+      }
+
+      .ann-drawer__notes {
+        width: 100%;
+        min-height: 120px;
+        background: var(--anna-bg);
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-sm);
+        color: var(--anna-text);
+        padding: 12px 14px;
+        font-family: var(--anna-font-body);
+        font-size: var(--anna-fs-sm);
+        line-height: 1.6;
+        resize: vertical;
+      }
+      .ann-drawer__notes:focus {
+        outline: 0;
+        border-color: var(--anna-accent);
+      }
+      .ann-drawer__notes-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .ann-drawer__foot {
+        flex: 0 0 auto;
+        padding: var(--anna-space-3) var(--anna-space-4);
+        border-top: 1px solid var(--anna-line);
+        display: flex;
+        justify-content: space-between;
+        gap: var(--anna-space-3);
+        background: var(--anna-bg);
+      }
+
+      /* ---------- Modal ---------- */
+      .ann-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9600;
+        background: rgba(5, 5, 5, 0.7);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--anna-space-4);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--anna-dur) var(--anna-ease);
+      }
+      .ann-modal-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .ann-modal {
+        max-width: 420px;
+        width: 100%;
+        padding: var(--anna-space-5);
+        background: var(--anna-surface);
+        border: 1px solid var(--anna-line-2);
+        border-radius: var(--anna-r-lg);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      }
+      .ann-modal h3 {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-lg);
+        color: var(--anna-text);
+        margin: 0 0 8px;
+        letter-spacing: -0.01em;
+      }
+      .ann-modal p {
+        color: var(--anna-text-2);
+        font-size: var(--anna-fs-sm);
+        line-height: 1.6;
+        margin: 0 0 var(--anna-space-4);
+      }
+      .ann-modal__actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .ann-btn.danger {
+        background: var(--anna-danger);
+        border-color: var(--anna-danger);
+        color: #2a0a0a;
+      }
+      .ann-btn.danger:hover {
+        background: #c74e4e;
+        border-color: #c74e4e;
+        color: #2a0a0a;
+      }
+
+      /* ============================================================
+       ANALYTICS
+       ============================================================ */
+      .ann-analytics__range {
+        display: inline-flex;
+        padding: 4px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line);
+        background: var(--anna-bg-2);
+        margin-bottom: var(--anna-space-5);
+      }
+      .ann-analytics__range button {
+        padding: 8px 16px;
+        border-radius: var(--anna-r-pill);
+        border: 0;
+        background: transparent;
+        color: var(--anna-text-2);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-analytics__range button:hover {
+        color: var(--anna-text);
+      }
+      .ann-analytics__range button.is-active {
+        background: var(--anna-accent);
+        color: #1a1206;
+      }
+
+      .ann-overview {
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-lg);
+        background: linear-gradient(
+          135deg,
+          var(--anna-surface) 0%,
+          var(--anna-bg-2) 100%
+        );
+        padding: var(--anna-space-5);
+        margin-bottom: var(--anna-space-5);
+      }
+      .ann-overview__label {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        color: var(--anna-accent);
+        margin-bottom: 10px;
+      }
+      .ann-overview__value {
+        font-family: var(--anna-font-display);
+        font-size: clamp(2.4rem, 1.6rem + 3vw, 4rem);
+        font-weight: 700;
+        color: var(--anna-text);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin: 0 0 10px;
+      }
+      .ann-overview__insight {
+        font-size: var(--anna-fs-base);
+        color: var(--anna-text-2);
+        line-height: 1.55;
+        max-width: 70ch;
+        font-style: italic;
+        border-left: 2px solid var(--anna-accent);
+        padding-left: 16px;
+        margin-top: var(--anna-space-3);
+      }
+
+      .ann-plat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--anna-space-4);
+        margin-bottom: var(--anna-space-5);
+      }
+      @media (max-width: 900px) {
+        .ann-plat-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .ann-plat {
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-lg);
+        background: var(--anna-surface);
+        padding: var(--anna-space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--anna-space-4);
+        transition: border-color var(--anna-dur) var(--anna-ease);
+      }
+      .ann-plat:hover {
+        border-color: var(--anna-line-2);
+      }
+
+      .ann-plat__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .ann-plat__brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .ann-plat__brand svg {
+        width: 24px;
+        height: 24px;
+      }
+      .ann-plat__name {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-base);
+        color: var(--anna-text);
+      }
+      .ann-plat__handle {
+        font-size: var(--anna-fs-xs);
+        color: var(--anna-text-3);
+        margin-top: 2px;
+      }
+      .ann-plat__trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: var(--anna-fs-xs);
+        padding: 4px 10px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line-2);
+      }
+      .ann-plat__trend.up {
+        color: #6cd28a;
+        border-color: #6cd28a;
+      }
+      .ann-plat__trend.down {
+        color: var(--anna-danger);
+        border-color: var(--anna-danger);
+      }
+
+      .ann-plat__big {
+        font-family: var(--anna-font-display);
+        font-size: clamp(1.8rem, 1.4rem + 2vw, 2.6rem);
+        font-weight: 700;
+        color: var(--anna-text);
+        letter-spacing: -0.02em;
+        line-height: 1;
+      }
+      .ann-plat__delta {
+        font-size: var(--anna-fs-sm);
+        color: #6cd28a;
+        margin-top: 6px;
+      }
+      .ann-plat__delta.is-negative {
+        color: var(--anna-danger);
+      }
+
+      /* Small metric grid */
+      .ann-plat__metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding-top: 14px;
+        border-top: 1px solid var(--anna-line);
+      }
+      .ann-plat__metric {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ann-plat__metric-label {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--anna-text-3);
+      }
+      .ann-plat__metric-value {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-base);
+        color: var(--anna-text);
+      }
+      .ann-plat__metric-delta {
+        font-size: 10px;
+        color: #6cd28a;
+      }
+      .ann-plat__metric-delta.is-negative {
+        color: var(--anna-danger);
+      }
+
+      /* AI insight quote */
+      .ann-plat__insight {
+        font-style: italic;
+        font-size: var(--anna-fs-sm);
+        color: var(--anna-text-2);
+        border-left: 2px solid var(--anna-accent);
+        padding-left: 14px;
+        line-height: 1.55;
+      }
+      .ann-plat__insight::before {
+        content: "AI — ";
+        color: var(--anna-accent);
+        font-style: normal;
+        letter-spacing: 0.14em;
+        font-size: 10px;
+      }
+
+      /* SVG chart container */
+      .ann-chart {
+        width: 100%;
+        height: 140px;
+        display: block;
+        overflow: visible;
+      }
+      .ann-chart__bar {
+        fill: var(--anna-accent);
+        opacity: 0.35;
+        transition: opacity var(--anna-dur-fast) var(--anna-ease);
+        cursor: pointer;
+      }
+      .ann-chart__bar:hover {
+        opacity: 0.85;
+      }
+      .ann-chart__bar.is-last {
+        opacity: 1;
+      }
+      .ann-chart__line {
+        fill: none;
+        stroke: var(--anna-accent);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .ann-chart__dot {
+        fill: var(--anna-accent);
+      }
+      .ann-chart__axis {
+        stroke: var(--anna-line-2);
+        stroke-width: 1;
+      }
+      .ann-chart__label {
+        fill: var(--anna-text-3);
+        font-size: 9px;
+        font-family: var(--anna-font-display);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      /* Top posts */
+      .ann-posts {
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-lg);
+        background: var(--anna-surface);
+        padding: var(--anna-space-5);
+      }
+      .ann-posts__title {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-base);
+        color: var(--anna-text);
+        margin: 0 0 var(--anna-space-3);
+      }
+      .ann-posts__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--anna-space-3);
+      }
+      @media (max-width: 700px) {
+        .ann-posts__grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .ann-post {
+        position: relative;
+        border-radius: var(--anna-r-md);
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        background: var(--anna-bg-2);
+      }
+      .ann-post img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+      }
+      .ann-post:hover img {
+        transform: scale(1.05);
+      }
+      .ann-post__overlay {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 12px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 8px;
+      }
+      .ann-post__stat {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: var(--anna-text);
+        font-family: var(--anna-font-display);
+      }
+      .ann-post__stat svg {
+        width: 12px;
+        height: 12px;
+      }
+      .ann-post__engagement {
+        font-size: 10px;
+        color: var(--anna-accent);
+        letter-spacing: 0.1em;
+        font-family: var(--anna-font-display);
+      }
+
+      /* ============================================================
+       CUSTOMIZATION PANEL
+       ============================================================ */
+      .ann-prefs-fab {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 9700;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line-2);
+        background: rgba(10, 10, 10, 0.65);
+        -webkit-backdrop-filter: blur(12px) saturate(140%);
+        backdrop-filter: blur(12px) saturate(140%);
+        color: var(--anna-text);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-prefs-fab:hover {
+        transform: rotate(30deg);
+        border-color: var(--anna-accent);
+        color: var(--anna-accent);
+      }
+      .ann-prefs-fab svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .ann-prefs {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(400px, 100vw);
+        z-index: 9800;
+        background: var(--anna-bg-2);
+        border-left: 1px solid var(--anna-line);
+        transform: translateX(100%);
+        transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+        display: flex;
+        flex-direction: column;
+      }
+      .ann-prefs.is-open {
+        transform: none;
+      }
+      .ann-prefs__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: var(--anna-space-5) var(--anna-space-4) var(--anna-space-4);
+        border-bottom: 1px solid var(--anna-line);
+      }
+      .ann-prefs__title {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xl);
+        color: var(--anna-text);
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+      }
+      .ann-prefs__sub {
+        color: var(--anna-text-3);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .ann-prefs__close {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line-2);
+        background: transparent;
+        color: var(--anna-text);
+        cursor: pointer;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-prefs__close:hover {
+        background: var(--anna-text);
+        color: #0a0a0a;
+      }
+
+      .ann-prefs__body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--anna-space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--anna-space-5);
+      }
+
+      .ann-prefs__section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .ann-prefs__label {
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        color: var(--anna-text-3);
+      }
+
+      /* Accent swatches */
+      .ann-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .ann-swatch {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        padding: 0;
+        transition:
+          transform var(--anna-dur-fast) var(--anna-ease),
+          border-color var(--anna-dur-fast) var(--anna-ease);
+        position: relative;
+      }
+      .ann-swatch:hover {
+        transform: scale(1.1);
+      }
+      .ann-swatch.is-active {
+        border-color: var(--anna-text);
+      }
+      .ann-swatch.is-active::after {
+        content: "";
+        position: absolute;
+        inset: 4px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      /* Density / theme buttons */
+      .ann-pref-options {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .ann-pref-option {
+        padding: 10px 16px;
+        border-radius: var(--anna-r-pill);
+        border: 1px solid var(--anna-line);
+        background: transparent;
+        color: var(--anna-text-2);
+        font-family: var(--anna-font-display);
+        font-size: var(--anna-fs-xs);
+        letter-spacing: var(--anna-tracking-wide);
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-pref-option:hover {
+        border-color: var(--anna-line-2);
+        color: var(--anna-text);
+      }
+      .ann-pref-option.is-active {
+        border-color: var(--anna-accent);
+        color: var(--anna-accent);
+      }
+
+      /* Display name + emoji */
+      .ann-prefs__row {
+        /* display: grid;
+        grid-template-columns: 80px 1fr; */
+        gap: 10px;
+      }
+      .ann-prefs__row input {
+        width: 100%;
+        background: var(--anna-bg);
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-sm);
+        color: var(--anna-text);
+        padding: 10px 12px;
+        font-family: var(--anna-font-body);
+        font-size: var(--anna-fs-sm);
+      }
+      .ann-prefs__row input:focus {
+        outline: 0;
+        border-color: var(--anna-accent);
+      }
+
+      /* Toggle */
+      .ann-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border: 1px solid var(--anna-line);
+        border-radius: var(--anna-r-sm);
+        cursor: pointer;
+        transition: border-color var(--anna-dur-fast) var(--anna-ease);
+      }
+      .ann-toggle:hover {
+        border-color: var(--anna-line-2);
+      }
+      .ann-toggle input {
+        display: none;
+      }
+      .ann-toggle__track {
+        width: 40px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--anna-line);
+        position: relative;
+        transition: background-color var(--anna-dur) var(--anna-ease);
+        flex: 0 0 auto;
+      }
+      .ann-toggle__track::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--anna-text);
+        transition: transform var(--anna-dur) var(--anna-ease);
+      }
+      .ann-toggle input:checked ~ .ann-toggle__track {
+        background: var(--anna-accent);
+      }
+      .ann-toggle input:checked ~ .ann-toggle__track::after {
+        transform: translateX(18px);
+        background: #1a1206;
+      }
+      .ann-toggle__label {
+        font-size: var(--anna-fs-sm);
+        color: var(--anna-text);
+      }
+
+      .ann-prefs__footer {
+        padding: var(--anna-space-3) var(--anna-space-4);
+        border-top: 1px solid var(--anna-line);
+        display: flex;
+        justify-content: space-between;
+        gap: var(--anna-space-3);
+        background: var(--anna-bg);
+      }
+
+      /* Theme overrides */
+      body.anna-theme-dim {
+        --anna-bg: #141414;
+        --anna-bg-2: #1a1a1a;
+        --anna-bg-3: #1f1f1f;
+        --anna-surface: #1c1c1c;
+        --anna-text: #e5e0d5;
+        --anna-text-2: rgba(229, 224, 213, 0.66);
+        --anna-text-3: rgba(229, 224, 213, 0.4);
+      }
+      body.anna-theme-light {
+        --anna-bg: #f5f2ec;
+        --anna-bg-2: #ece8e0;
+        --anna-bg-3: #e2ddd3;
+        --anna-surface: #ffffff;
+        --anna-line: rgba(0, 0, 0, 0.08);
+        --anna-line-2: rgba(0, 0, 0, 0.14);
+        --anna-text: #14110c;
+        --anna-text-2: rgba(20, 17, 12, 0.66);
+        --anna-text-3: rgba(20, 17, 12, 0.4);
+        background-color: var(--anna-bg);
+      }
+      body.anna-theme-light .ann-admin__table th {
+        background: var(--anna-bg-3);
+      }
+
+      /* Density */
+      body.anna-density-compact .ann-admin__table th,
+      body.anna-density-compact .ann-admin__table td {
+        padding: 10px 12px;
+        font-size: var(--anna-fs-xs);
+      }
+      body.anna-density-spacious .ann-admin__table th,
+      body.anna-density-spacious .ann-admin__table td {
+        padding: 22px 24px;
+      }
+
+      /* Corner style */
+      body.anna-corners-sharp {
+        --anna-r-lg: 2px;
+        --anna-r-md: 2px;
+        --anna-r-sm: 2px;
+      }
+      body.anna-corners-soft {
+        --anna-r-lg: 28px;
+        --anna-r-md: 20px;
+        --anna-r-sm: 12px;
+      }
+
+      @media (max-width: 767px) {
+        .ann-admin__table thead {
+          display: none;
+        }
+        .ann-admin__table,
+        .ann-admin__table tbody,
+        .ann-admin__table tr,
+        .ann-admin__table td {
+          display: block;
+          width: 100%;
+        }
+        .ann-admin__table tr {
+          border-bottom: 1px solid var(--anna-line);
+          padding: var(--anna-space-3);
+        }
+        .ann-admin__table tbody tr:last-child {
+          border-bottom: 0;
+        }
+        .ann-admin__table td {
+          border: 0;
+          padding: 4px 0;
+        }
+        .ann-admin__table td::before {
+          content: attr(data-label) ": ";
+          color: var(--anna-text-3);
+          font-size: var(--anna-fs-xs);
+          letter-spacing: var(--anna-tracking-mid);
+          text-transform: uppercase;
+          margin-right: 8px;
+        }
+        .ann-admin__row-actions {
+          margin-top: 12px;
+        }
+        .ann-drawer__row {
+          grid-template-columns: 1fr;
+          gap: 4px;
+          padding: 12px 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="body-5">
+    <a class="ann-back" href="./index.html" aria-label="Back to home">
+      <span class="ann-back__arrow" aria-hidden="true">
+        <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+          <path
+            d="M11 5 6 10l5 5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span>Back</span>
+    </a>
+    <!-- ============================================================
+       LOGIN
+       ============================================================ -->
+    <div class="ann-admin__login-wrap" data-admin-login>
+      <div class="ann-admin__login">
+        <h1>Team Annatoria</h1>
+        <p>Admin dashboard. Sign in to view bookings and analytics.</p>
+
+        <form autocomplete="on">
+          <div class="ann-field">
+            <label for="admin-email">Email</label>
+            <input
+              type="email"
+              id="admin-email"
+              name="email"
+              autocomplete="username"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <div class="ann-field">
+            <label for="admin-password">Password</label>
+            <input
+              type="password"
+              id="admin-password"
+              name="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <button type="submit" class="ann-btn ann-btn--primary">
+            Sign in <span class="ann-btn__arrow">→</span>
+          </button>
+          <div class="ann-admin__login-error" data-login-error></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================================
+       DASHBOARD
+       ============================================================ -->
+    <main class="ann-admin-page ann-hidden" data-admin-dashboard data-admin>
+      <!-- Prefs floating button -->
+      <button class="ann-prefs-fab" data-prefs-open aria-label="Customize">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+          />
+        </svg>
+      </button>
+
+      <div class="ann-admin__topbar">
+        <div>
+          <div class="ann-admin__title-row">
+            <!-- <span  data-prefs-avatar>👑</span> -->
+            <img
+              class="ann-admin__avatar"
+              src="./assets/mains/icons/singer.gif"
+              alt=""
+            />
+            <h1 class="ann-admin__title" data-prefs-title>Team Annatoria</h1>
+          </div>
+          <div class="ann-admin__subtitle" data-admin-summary>—</div>
+        </div>
+        <div class="ann-admin__row-actions">
+          <button class="ann-btn" data-admin-refresh>
+            Refresh
+            <span
+              class="ann-btn__arrow"
+              style="transform: rotate(-90deg); display: inline-block"
+              >→</span
+            >
+          </button>
+          <button class="ann-btn" data-admin-logout>Sign out</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="ann-tabs" role="tablist">
+        <button class="ann-tab is-active" role="tab" data-tab="bookings">
+          Bookings
+        </button>
+        <button class="ann-tab" role="tab" data-tab="analytics">
+          Analytics
+        </button>
+      </div>
+
+      <!-- ============================================================
+         TAB: Bookings
+         ============================================================ -->
+      <section class="ann-tab-panel is-active" data-tab-panel="bookings">
+        <div class="ann-admin__toolbar">
+          <div class="ann-admin__search">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3-3" stroke-linecap="round" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search name, email, event, organization…"
+              data-admin-search
+            />
+          </div>
+
+          <div class="ann-admin__filters" data-admin-filters>
+            <button class="ann-admin__filter is-active" data-filter="all">
+              All <span class="count" data-count-all>0</span>
+            </button>
+            <button class="ann-admin__filter" data-filter="new">
+              New <span class="count" data-count-new>0</span>
+            </button>
+            <button class="ann-admin__filter" data-filter="read">
+              Read <span class="count" data-count-read>0</span>
+            </button>
+            <button class="ann-admin__filter" data-filter="accepted">
+              Accepted <span class="count" data-count-accepted>0</span>
+            </button>
+            <button class="ann-admin__filter" data-filter="declined">
+              Declined <span class="count" data-count-declined>0</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ann-admin__table-wrap">
+          <table class="ann-admin__table">
+            <thead>
+              <tr>
+                <th>Received</th>
+                <th>Name / Email</th>
+                <th>Event</th>
+                <th>Status</th>
+                <th style="text-align: right">Actions</th>
+              </tr>
+            </thead>
+            <tbody data-admin-rows>
+              <tr>
+                <td colspan="5" class="ann-admin__empty">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         TAB: Analytics
+         ============================================================ -->
+      <section class="ann-tab-panel" data-tab-panel="analytics">
+        <div class="ann-analytics__range" data-analytics-range>
+          <button class="is-active" data-range="7d">7 days</button>
+          <button data-range="30d">30 days</button>
+          <button data-range="90d">90 days</button>
+        </div>
+
+        <div data-analytics-content>
+          <div class="ann-admin__empty">Loading analytics…</div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         DRAWER — booking detail
+         ============================================================ -->
+      <div class="ann-drawer-backdrop" data-drawer-close></div>
+
+      <aside class="ann-drawer" data-drawer aria-hidden="true">
+        <div class="ann-drawer__head">
+          <div>
+            <h2 class="ann-drawer__title" data-drawer-title>Booking</h2>
+            <div class="ann-drawer__subtitle" data-drawer-subtitle>—</div>
+          </div>
+          <button
+            class="ann-drawer__close"
+            data-drawer-close
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="ann-drawer__body" data-drawer-body></div>
+
+        <div class="ann-drawer__foot">
+          <button class="ann-btn danger" data-drawer-delete>Delete</button>
+          <button class="ann-btn ann-btn--primary" data-drawer-close>
+            Close
+          </button>
+        </div>
+      </aside>
+
+      <!-- ============================================================
+         DELETE CONFIRM
+         ============================================================ -->
+      <div class="ann-modal-backdrop" data-confirm>
+        <div class="ann-modal">
+          <h3>Delete this booking?</h3>
+          <p>
+            This action cannot be undone. The booking will be permanently
+            removed from the system.
+          </p>
+          <div class="ann-modal__actions">
+            <button class="ann-btn" data-confirm-cancel>Cancel</button>
+            <button class="ann-btn danger" data-confirm-ok>Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+         PREFERENCES PANEL
+         ============================================================ -->
+      <div class="ann-drawer-backdrop" data-prefs-backdrop></div>
+
+      <aside class="ann-prefs" data-prefs aria-hidden="true">
+        <div class="ann-prefs__head">
+          <div>
+            <h2 class="ann-prefs__title">Customize</h2>
+            <div class="ann-prefs__sub">Your dashboard, your vibe</div>
+          </div>
+          <button class="ann-prefs__close" data-prefs-close aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div class="ann-prefs__body">
+          <!-- Accent -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Accent colour</span>
+            <div class="ann-swatches" data-prefs-swatches>
+              <button
+                class="ann-swatch is-active"
+                data-accent="#e8b04b"
+                style="background: #e8b04b"
+                aria-label="Gold"
+              ></button>
+              <button
+                class="ann-swatch"
+                data-accent="#ff6b9d"
+                style="background: #ff6b9d"
+                aria-label="Pink"
+              ></button>
+              <button
+                class="ann-swatch"
+                data-accent="#6cc0ff"
+                style="background: #6cc0ff"
+                aria-label="Blue"
+              ></button>
+              <button
+                class="ann-swatch"
+                data-accent="#6cd28a"
+                style="background: #6cd28a"
+                aria-label="Green"
+              ></button>
+              <button
+                class="ann-swatch"
+                data-accent="#b07cff"
+                style="background: #b07cff"
+                aria-label="Purple"
+              ></button>
+              <button
+                class="ann-swatch"
+                data-accent="#ff8a4c"
+                style="background: #ff8a4c"
+                aria-label="Orange"
+              ></button>
+            </div>
+          </div>
+
+          <!-- Theme toggle -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Theme</span>
+
+            <label class="ann-theme-switch">
+              <input type="checkbox" data-theme-switch />
+              <span class="ann-theme-switch__track" aria-hidden="true">
+                <span class="ann-theme-switch__knob">
+                  <svg
+                    class="ann-theme-switch__icon moon"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                  <svg
+                    class="ann-theme-switch__icon sun"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="4" fill="currentColor" />
+                    <path
+                      d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+                    />
+                  </svg>
+                </span>
+              </span>
+              <span class="ann-theme-switch__label" data-theme-switch-label
+                >Dark</span
+              >
+            </label>
+
+            <!-- Dim mode kept as a small extra option for those who want it -->
+            <div
+              class="ann-pref-options"
+              style="margin-top: 10px"
+              data-prefs-dim
+            >
+              <button class="ann-pref-option" data-theme="dim">
+                Use Dim instead
+              </button>
+            </div>
+          </div>
+
+          <!-- Density -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Density</span>
+            <div class="ann-pref-options" data-prefs-density>
+              <button class="ann-pref-option" data-density="compact">
+                Compact
+              </button>
+              <button
+                class="ann-pref-option is-active"
+                data-density="comfortable"
+              >
+                Comfortable
+              </button>
+              <button class="ann-pref-option" data-density="spacious">
+                Spacious
+              </button>
+            </div>
+          </div>
+
+          <!-- Corners -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Corner style</span>
+            <div class="ann-pref-options" data-prefs-corners>
+              <button class="ann-pref-option" data-corners="sharp">
+                Sharp
+              </button>
+              <button class="ann-pref-option is-active" data-corners="rounded">
+                Rounded
+              </button>
+              <button class="ann-pref-option" data-corners="soft">Soft</button>
+            </div>
+          </div>
+
+          <!-- Display name + avatar -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Display name &amp; avatar</span>
+            <div class="ann-prefs__row">
+              <!-- <input
+                type="text"
+                data-prefs-avatar-input
+                maxlength="2"
+                placeholder="👑"
+              /> -->
+
+              <input
+                type="text"
+                data-prefs-name-input
+                placeholder="Team Annatoria"
+                maxlength="40"
+              />
+            </div>
+          </div>
+
+          <!-- Sound -->
+          <div class="ann-prefs__section">
+            <span class="ann-prefs__label">Sound</span>
+            <label class="ann-toggle">
+              <span class="ann-toggle__label">Subtle UI sounds</span>
+              <input type="checkbox" data-prefs-sound />
+              <span class="ann-toggle__track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="ann-prefs__footer">
+          <button class="ann-btn" data-prefs-reset>Reset to defaults</button>
+          <button class="ann-btn ann-btn--primary" data-prefs-close>
+            Done
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <script src="./annatoria.js" defer></script>
+  </body>
+</html>

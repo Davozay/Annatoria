@@ -1,0 +1,2975 @@
+/* ============================================================
+   ANNATORIA — Premium layer
+   Layered on top of Webflow export. Does not modify Webflow files.
+   ============================================================ */
+
+
+
+/* html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+} */
+
+html,
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+:root {
+  /* Colour */
+  --anna-bg: #0a0a0a;
+  --anna-bg-2: #121212;
+  --anna-bg-3: #1a1a1a;
+  --anna-surface: #161616;
+  --anna-line: rgba(255, 255, 255, 0.08);
+  --anna-line-2: rgba(255, 255, 255, 0.14);
+  --anna-text: #f4f1ea;
+  --anna-text-2: rgba(244, 241, 234, 0.66);
+  --anna-text-3: rgba(244, 241, 234, 0.4);
+  --anna-accent: #e8b04b;
+  --anna-accent-2: #c98a2b;
+  --anna-danger: #e05a5a;
+
+  /* Typography */
+  --anna-font-display: 'Moderat', 'Spacegrotesk', system-ui, sans-serif;
+  --anna-font-body: 'Spacegrotesk', 'Moderat', system-ui, sans-serif;
+
+  --anna-fs-xs: clamp(0.72rem, 0.68rem + 0.2vw, 0.82rem);
+  --anna-fs-sm: clamp(0.85rem, 0.8rem + 0.25vw, 0.95rem);
+  --anna-fs-base: clamp(0.98rem, 0.92rem + 0.3vw, 1.08rem);
+  --anna-fs-lg: clamp(1.2rem, 1.05rem + 0.7vw, 1.5rem);
+  --anna-fs-xl: clamp(1.8rem, 1.4rem + 2vw, 2.6rem);
+  --anna-fs-2xl: clamp(2.6rem, 1.8rem + 3.6vw, 4.4rem);
+  --anna-fs-3xl: clamp(3.6rem, 2.2rem + 6vw, 7rem);
+
+  --anna-lh-tight: 1.05;
+  --anna-lh-snug: 1.2;
+  --anna-lh-base: 1.55;
+  --anna-tracking-wide: 0.14em;
+  --anna-tracking-mid: 0.04em;
+
+  /* Spacing */
+  --anna-space-1: 0.5rem;
+  --anna-space-2: 1rem;
+  --anna-space-3: 1.5rem;
+  --anna-space-4: 2rem;
+  --anna-space-5: 3rem;
+  --anna-space-6: 4rem;
+  --anna-space-7: 6rem;
+  --anna-space-8: 8rem;
+
+  /* Radii */
+  --anna-r-sm: 6px;
+  --anna-r-md: 12px;
+  --anna-r-lg: 18px;
+  --anna-r-pill: 999px;
+
+  /* Motion */
+  --anna-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --anna-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --anna-dur-fast: 220ms;
+  --anna-dur: 480ms;
+  --anna-dur-slow: 760ms;
+
+  /* Layout */
+  --anna-max: 1320px;
+  --anna-gutter: clamp(1.25rem, 4vw, 4rem);
+  --anna-nav-h: 72px;
+}
+
+
+
+
+
+/* ============================================================
+   PUBLIC SITE THEMES
+   Two ways the public theme can be applied:
+   1. User manually picked → <html> has .anna-public-dark or .anna-public-light
+   2. No choice yet       → follows @media (prefers-color-scheme)
+
+   These classes only exist on index.html and contact.html.
+   The admin page never gets them (its JS skips the pre-paint).
+   ============================================================ */
+
+/* ---- Forced DARK ---- */
+html.anna-public-dark {
+  --anna-bg: #0a0a0a;
+  --anna-bg-2: #121212;
+  --anna-bg-3: #1a1a1a;
+  --anna-surface: #161616;
+  --anna-line: rgba(255, 255, 255, 0.08);
+  --anna-line-2: rgba(255, 255, 255, 0.14);
+  --anna-text: #f4f1ea;
+  --anna-text-2: rgba(244, 241, 234, 0.66);
+  --anna-text-3: rgba(244, 241, 234, 0.4);
+}
+
+html.anna-public-dark body.body-5 {
+  background-color: #0a0a0a !important;
+}
+
+/* ---- Forced LIGHT ---- */
+html.anna-public-light {
+  --anna-bg: #f5f2ec;
+  --anna-bg-2: #ece8e0;
+  --anna-bg-3: #e2ddd3;
+  --anna-surface: #ffffff;
+  --anna-line: rgba(20, 17, 12, 0.08);
+  --anna-line-2: rgba(20, 17, 12, 0.14);
+  --anna-text: #14110c;
+  --anna-text-2: rgba(20, 17, 12, 0.66);
+  --anna-text-3: rgba(20, 17, 12, 0.4);
+}
+
+html.anna-public-light body.body-5 {
+  background-color: #f5f2ec !important;
+}
+
+/* Shared LIGHT adjustments — apply whether forced or OS-derived.
+   Selected via :is() so we don't have to duplicate. */
+html.anna-public-light .ann-hero__bg-veil,
+html.anna-public-light .ann-editorial,
+html.anna-public-light .ann-side,
+html.anna-public-light .ann-side.is-scrolled,
+html.anna-public-light .ann-brand-fixed,
+html.anna-public-light .ann-back,
+html.anna-public-light .ann-scroll-cue,
+html.anna-public-light .creator,
+html.anna-public-light .ann-theme-btn,
+html.anna-public-light .ann-btn,
+html.anna-public-light .ann-btn--primary {
+  /* placeholder so the selector above stays valid if you later
+     want to add light-specific tweaks. Move individual rules here. */
+}
+
+html.anna-public-light .ann-hero__bg-veil {
+  background:
+    radial-gradient(120% 90% at 20% 30%,
+      rgba(245, 242, 236, 0.15) 0%,
+      rgba(245, 242, 236, 0.55) 55%,
+      rgba(245, 242, 236, 0.92) 100%),
+    linear-gradient(180deg,
+      rgba(245, 242, 236, 0.55) 0%,
+      rgba(245, 242, 236, 0.15) 35%,
+      rgba(245, 242, 236, 0.95) 100%);
+}
+
+html.anna-public-light .ann-editorial {
+  background: var(--anna-bg);
+}
+
+html.anna-public-light .ann-side {
+  background: var(--anna-bg);
+}
+
+html.anna-public-light .ann-side.is-scrolled {
+  background: rgba(245, 242, 236, 0.78);
+  border-left-color: var(--anna-line);
+}
+
+html.anna-public-light .ann-brand-fixed,
+html.anna-public-light .ann-back,
+html.anna-public-light .ann-scroll-cue,
+html.anna-public-light .creator,
+html.anna-public-light .ann-theme-btn {
+  background: rgba(245, 242, 236, 0.75);
+  border-color: var(--anna-line-2);
+}
+
+html.anna-public-light .ann-brand-fixed:hover,
+html.anna-public-light .ann-back:hover,
+html.anna-public-light .ann-scroll-cue:hover,
+html.anna-public-light .creator:hover,
+html.anna-public-light .ann-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--anna-text);
+}
+
+html.anna-public-light .ann-btn:hover {
+  background: var(--anna-text);
+  color: var(--anna-bg);
+  border-color: var(--anna-text);
+}
+
+html.anna-public-light .ann-btn--primary {
+  color: #1a1206;
+}
+
+html.anna-public-light .ann-btn--primary:hover {
+  color: #1a1206;
+}
+
+html.anna-public-light .ann-theme-btn__icon.moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+
+html.anna-public-light .ann-theme-btn__icon.sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ---- OS preference — applies only when neither force-class is present ---- */
+@media (prefers-color-scheme: light) {
+  html:not(.anna-public-dark):not(.anna-public-light) {
+    --anna-bg: #f5f2ec;
+    --anna-bg-2: #ece8e0;
+    --anna-bg-3: #e2ddd3;
+    --anna-surface: #ffffff;
+    --anna-line: rgba(20, 17, 12, 0.08);
+    --anna-line-2: rgba(20, 17, 12, 0.14);
+    --anna-text: #14110c;
+    --anna-text-2: rgba(20, 17, 12, 0.66);
+    --anna-text-3: rgba(20, 17, 12, 0.4);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) body.body-5 {
+    background-color: #f5f2ec !important;
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-hero__bg-veil {
+    background:
+      radial-gradient(120% 90% at 20% 30%,
+        rgba(245, 242, 236, 0.15) 0%,
+        rgba(245, 242, 236, 0.55) 55%,
+        rgba(245, 242, 236, 0.92) 100%),
+      linear-gradient(180deg,
+        rgba(245, 242, 236, 0.55) 0%,
+        rgba(245, 242, 236, 0.15) 35%,
+        rgba(245, 242, 236, 0.95) 100%);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-editorial {
+    background: var(--anna-bg);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-side {
+    background: var(--anna-bg);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-side.is-scrolled {
+    background: rgba(245, 242, 236, 0.78);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-brand-fixed,
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-back,
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-scroll-cue,
+  html:not(.anna-public-dark):not(.anna-public-light) .creator,
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-theme-btn {
+    background: rgba(245, 242, 236, 0.75);
+    border-color: var(--anna-line-2);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-theme-btn__icon.moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-theme-btn__icon.sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  html:not(.anna-public-dark):not(.anna-public-light) .ann-btn:hover {
+    background: var(--anna-text);
+    color: var(--anna-bg);
+    border-color: var(--anna-text);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------------------------------------------------
+   BASE RESET / OVERRIDES (scoped, non-destructive)
+   ------------------------------------------------------------ */
+body.body-5 {
+  /* Overrides the debug red background */
+  background-color: var(--anna-bg) !important;
+  color: var(--anna-text);
+  font-family: var(--anna-font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   REVEAL SYSTEM
+   Elements with [data-reveal] start hidden; .is-revealed plays in.
+   ------------------------------------------------------------ */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--anna-dur) var(--anna-ease-out),
+    transform var(--anna-dur) var(--anna-ease-out);
+  will-change: opacity, transform;
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal="left"] {
+  transform: translate3d(-32px, 0, 0);
+}
+
+[data-reveal="right"] {
+  transform: translate3d(32px, 0, 0);
+}
+
+[data-reveal="scale"] {
+  transform: scale(0.96);
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Stagger: parent with [data-stagger], children with [data-reveal-child] */
+[data-stagger]>[data-reveal-child] {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity var(--anna-dur) var(--anna-ease-out),
+    transform var(--anna-dur) var(--anna-ease-out);
+}
+
+[data-stagger].is-revealed>[data-reveal-child] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------
+   NAV — scroll state
+   ------------------------------------------------------------ */
+
+/* ============================================================
+   SIDE NAV — fixed vertical rail
+   ============================================================ */
+:root {
+  --anna-side-w: 84px;
+}
+
+.ann-side {
+  position: fixed;
+  top: 0;
+  right: 0;
+  /* ← changed from left: 0 */
+  bottom: 0;
+  width: var(--anna-side-w);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0;
+  background: transparent;
+  /* ← transparent at top */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-left: 1px solid transparent;
+  /* ← changed from border-right */
+  transition:
+    background-color var(--anna-dur) var(--anna-ease),
+    backdrop-filter var(--anna-dur) var(--anna-ease),
+    -webkit-backdrop-filter var(--anna-dur) var(--anna-ease),
+    border-color var(--anna-dur) var(--anna-ease);
+}
+
+/* Solidified state — triggered by JS when you scroll */
+.ann-side.is-scrolled {
+  background: rgba(10, 10, 10, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-left-color: var(--anna-line);
+}
+
+.ann-side__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  gap: var(--anna-space-4);
+}
+
+.ann-side__brand img {
+  height: 32px;
+  width: auto;
+  display: block;
+  opacity: 0.9;
+  transition: opacity var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-side__brand:hover img {
+  opacity: 1;
+}
+
+.ann-side__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--anna-space-4);
+  margin: auto 0;
+}
+
+.ann-side__link {
+  position: relative;
+  color: var(--anna-text-2);
+  font-family: var(--anna-font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  writing-mode: sideways-lr;
+  /* transform: rotate(180deg); */
+  padding: 8px 6px;
+  transition: color var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-side__link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -6px;
+  /* ← sits just to the right of the text */
+  width: 1px;
+  background: currentColor;
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  /* ← grows upward from bottom */
+  transition: transform var(--anna-dur) var(--anna-ease-out);
+}
+
+.ann-side__link:hover::after,
+.ann-side__link[aria-current="page"]::after {
+  transform: scaleY(1);
+}
+
+.ann-side__link:hover,
+.ann-side__link[aria-current="page"] {
+  color: var(--anna-text);
+}
+
+.ann-side__link:hover::after,
+.ann-side__link[aria-current="page"]::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.ann-side__link.small {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.ann-side__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--anna-space-3);
+  margin-top: auto;
+}
+
+.ann-side__cta {
+  writing-mode: vertical-rl;
+  /* transform: rotate(180deg); */
+  padding: 14px 8px;
+  border-radius: var(--anna-r-pill);
+  background: var(--anna-accent);
+  color: #1a1206 !important;
+  font-family: var(--anna-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease), transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-side__cta:hover {
+  background: var(--anna-accent-2);
+  transform: rotate(180deg) translateY(2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Push all page content to the right of the rail on desktop */
+@media (min-width: 768px) {
+  body.body-5 {
+    padding-left: var(--anna-side-w);
+  }
+
+  .ann-hero__inner,
+  .main-container {
+    margin-left: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------------------------------------------------
+   SECTION PRIMITIVES
+   ------------------------------------------------------------ */
+.ann-section {
+  position: relative;
+  padding: var(--anna-space-8) var(--anna-gutter);
+  max-width: var(--anna-max);
+  margin: 0 auto;
+}
+
+.ann-section--full {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ann-eyebrow {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-accent);
+  margin-bottom: var(--anna-space-3);
+}
+
+.ann-h2 {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-2xl);
+  line-height: var(--anna-lh-tight);
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--anna-space-3);
+  color: var(--anna-text);
+}
+
+.ann-lead {
+  font-size: var(--anna-fs-lg);
+  line-height: var(--anna-lh-base);
+  color: var(--anna-text-2);
+  max-width: 62ch;
+}
+
+.ann-rule {
+  height: 1px;
+  background: var(--anna-line);
+  border: 0;
+  margin: var(--anna-space-5) 0;
+}
+
+/* ------------------------------------------------------------
+   MUSIC
+   ------------------------------------------------------------ */
+.ann-music {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--anna-space-5);
+}
+
+@media (max-width: 900px) {
+  .ann-music {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ann-release {
+  position: relative;
+  border-radius: var(--anna-r-lg);
+  overflow: hidden;
+  background: var(--anna-surface);
+  border: 1px solid var(--anna-line);
+  transition: border-color var(--anna-dur) var(--anna-ease);
+}
+
+.ann-release:hover {
+  border-color: var(--anna-line-2);
+}
+
+.ann-release__art {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: #222;
+  display: block;
+  object-fit: cover;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+}
+
+.ann-release:hover .ann-release__art {
+  transform: scale(1.03);
+}
+
+.ann-release__meta {
+  padding: var(--anna-space-4);
+}
+
+.ann-release__tag {
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-accent);
+}
+
+.ann-release__title {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xl);
+  margin: var(--anna-space-2) 0 var(--anna-space-1);
+}
+
+.ann-release__sub {
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-sm);
+}
+
+.ann-tracklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--anna-space-2);
+}
+
+.ann-track {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: var(--anna-space-3);
+  align-items: center;
+  padding: var(--anna-space-2);
+  border-radius: var(--anna-r-md);
+  border: 1px solid transparent;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease), border-color var(--anna-dur-fast) var(--anna-ease), transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-track:hover {
+  background: var(--anna-bg-2);
+  border-color: var(--anna-line);
+  transform: translateY(-1px);
+}
+
+.ann-track__art {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--anna-r-sm);
+  object-fit: cover;
+  background: #222;
+}
+
+.ann-track__name {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-base);
+}
+
+.ann-track__meta {
+  color: var(--anna-text-3);
+  font-size: var(--anna-fs-xs);
+  margin-top: 2px;
+}
+
+.ann-track__play {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: transparent;
+  color: var(--anna-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease), transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-track:hover .ann-track__play {
+  background: var(--anna-accent);
+  color: #1a1206;
+  border-color: var(--anna-accent);
+  transform: scale(1.06);
+}
+
+/* ------------------------------------------------------------
+   SOCIAL — FOLLOW THE JOURNEY
+   ------------------------------------------------------------ */
+.ann-social {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--anna-space-3);
+}
+
+.ann-social__card {
+  position: relative;
+  padding: var(--anna-space-4);
+  border-radius: var(--anna-r-lg);
+  background: var(--anna-surface);
+  border: 1px solid var(--anna-line);
+  text-decoration: none;
+  color: var(--anna-text);
+  display: flex;
+  flex-direction: column;
+  gap: var(--anna-space-2);
+  transition: transform var(--anna-dur) var(--anna-ease), border-color var(--anna-dur) var(--anna-ease), background-color var(--anna-dur) var(--anna-ease);
+  overflow: hidden;
+}
+
+.ann-social__card:hover {
+  transform: translateY(-4px);
+  border-color: var(--anna-line-2);
+  background: var(--anna-bg-3);
+}
+
+.ann-social__icon {
+  width: 28px;
+  height: 28px;
+  color: var(--anna-text);
+  transition: transform var(--anna-dur) var(--anna-ease);
+}
+
+.ann-social__card:hover .ann-social__icon {
+  transform: translateX(4px);
+}
+
+.ann-social__name {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-base);
+}
+
+.ann-social__stat {
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-sm);
+}
+
+.ann-social__cta {
+  margin-top: auto;
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-accent);
+}
+
+/* ------------------------------------------------------------
+   MOMENTS — masonry + lightbox
+   ------------------------------------------------------------ */
+.ann-moments {
+  columns: 3;
+  column-gap: var(--anna-space-3);
+}
+
+@media (max-width: 900px) {
+  .ann-moments {
+    columns: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .ann-moments {
+    columns: 1;
+  }
+}
+
+.ann-moment {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--anna-space-3);
+  border-radius: var(--anna-r-md);
+  overflow: hidden;
+  break-inside: avoid;
+  cursor: zoom-in;
+  border: 1px solid var(--anna-line);
+  background: var(--anna-bg-2);
+}
+
+.ann-moment img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out), filter var(--anna-dur) var(--anna-ease);
+}
+
+.ann-moment:hover img {
+  transform: scale(1.04);
+  filter: brightness(0.82);
+}
+
+.ann-moment__meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--anna-space-3);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--anna-dur) var(--anna-ease), transform var(--anna-dur) var(--anna-ease);
+}
+
+.ann-moment:hover .ann-moment__meta {
+  opacity: 1;
+  transform: none;
+}
+
+.ann-moment__title {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-sm);
+}
+
+.ann-moment__sub {
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-xs);
+  margin-top: 2px;
+}
+
+/* Lightbox */
+.ann-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(5, 5, 5, 0.94);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--anna-gutter);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--anna-dur) var(--anna-ease);
+}
+
+.ann-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ann-lightbox img {
+  max-width: 100%;
+  max-height: 88vh;
+  border-radius: var(--anna-r-md);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.ann-lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--anna-r-pill);
+  background: transparent;
+  border: 1px solid var(--anna-line-2);
+  color: var(--anna-text);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------
+   AWARDS
+   ------------------------------------------------------------ */
+.ann-awards__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--anna-space-3);
+}
+
+.ann-award {
+  padding: var(--anna-space-4);
+  border-radius: var(--anna-r-md);
+  background: var(--anna-surface);
+  border: 1px solid var(--anna-line);
+  transition: border-color var(--anna-dur) var(--anna-ease), transform var(--anna-dur) var(--anna-ease);
+}
+
+.ann-award:hover {
+  border-color: var(--anna-line-2);
+  transform: translateY(-3px);
+}
+
+.ann-award__label {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-base);
+}
+
+.ann-award__sub {
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-sm);
+  margin-top: var(--anna-space-1);
+}
+
+/* ------------------------------------------------------------
+   EVENTS — ON STAGE
+   ------------------------------------------------------------ */
+.ann-events__empty {
+  padding: var(--anna-space-6) var(--anna-space-4);
+  border: 1px dashed var(--anna-line-2);
+  border-radius: var(--anna-r-lg);
+  text-align: center;
+  color: var(--anna-text-2);
+}
+
+.ann-events__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--anna-space-2);
+}
+
+.ann-event {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: var(--anna-space-3);
+  align-items: center;
+  padding: var(--anna-space-3);
+  border-radius: var(--anna-r-md);
+  background: var(--anna-surface);
+  border: 1px solid var(--anna-line);
+  transition: transform var(--anna-dur) var(--anna-ease), border-color var(--anna-dur) var(--anna-ease);
+}
+
+.ann-event:hover {
+  transform: translateY(-2px);
+  border-color: var(--anna-line-2);
+}
+
+.ann-event__date {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-sm);
+  color: var(--anna-accent);
+}
+
+.ann-event__name {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-base);
+}
+
+.ann-event__loc {
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-sm);
+  margin-top: 2px;
+}
+
+.ann-event__cta {
+  border: 1px solid var(--anna-line-2);
+  background: transparent;
+  color: var(--anna-text);
+  padding: 8px 14px;
+  border-radius: var(--anna-r-pill);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease), color var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-event__cta:hover {
+  background: var(--anna-accent);
+  color: #1a1206;
+  border-color: var(--anna-accent);
+}
+
+/* ------------------------------------------------------------
+   STORIES
+   ------------------------------------------------------------ */
+.ann-stories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--anna-space-4);
+}
+
+.ann-story {
+  position: relative;
+  border-radius: var(--anna-r-lg);
+  overflow: hidden;
+  background: var(--anna-surface);
+  border: 1px solid var(--anna-line);
+  aspect-ratio: 4 / 5;
+  display: block;
+  color: var(--anna-text);
+  text-decoration: none;
+}
+
+.ann-story img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out), filter var(--anna-dur) var(--anna-ease);
+}
+
+.ann-story:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.7);
+}
+
+.ann-story__body {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--anna-space-4);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 80%);
+}
+
+.ann-story__kicker {
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-accent);
+}
+
+.ann-story__title {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-lg);
+  margin-top: var(--anna-space-2);
+  line-height: var(--anna-lh-snug);
+}
+
+/* ------------------------------------------------------------
+   BOTTOM MEDIA STRIP — replaces the overlapping images
+   ------------------------------------------------------------ */
+.ann-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--anna-space-2);
+  padding: var(--anna-space-5) var(--anna-gutter);
+}
+
+@media (max-width: 900px) {
+  .ann-strip {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .ann-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ann-strip__item {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--anna-r-md);
+  overflow: hidden;
+  background: var(--anna-bg-2);
+  border: 1px solid var(--anna-line);
+}
+
+.ann-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+}
+
+.ann-strip__item:hover img {
+  transform: scale(1.05);
+}
+
+/* ------------------------------------------------------------
+   FOOTER
+   ------------------------------------------------------------ */
+.ann-footer {
+  padding: var(--anna-space-6) var(--anna-gutter) var(--anna-space-5);
+  border-top: 1px solid var(--anna-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--anna-space-4);
+  justify-content: space-between;
+  align-items: center;
+  color: var(--anna-text-3);
+  font-size: var(--anna-fs-sm);
+}
+
+.ann-footer a {
+  color: var(--anna-text-2);
+  text-decoration: none;
+}
+
+.ann-footer a:hover {
+  color: var(--anna-text);
+}
+
+/* ------------------------------------------------------------
+   BUTTONS
+   ------------------------------------------------------------ */
+.ann-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: transparent;
+  color: var(--anna-text);
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-sm);
+  letter-spacing: var(--anna-tracking-mid);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease), color var(--anna-dur-fast) var(--anna-ease), transform var(--anna-dur-fast) var(--anna-ease), border-color var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-btn:hover {
+  background: var(--anna-text);
+  color: #0a0a0a;
+  border-color: var(--anna-text);
+  transform: translateY(-1px);
+}
+
+.ann-btn--primary {
+  background: var(--anna-accent);
+  color: #1a1206;
+  border-color: var(--anna-accent);
+}
+
+.ann-btn--primary:hover {
+  background: var(--anna-accent-2);
+  border-color: var(--anna-accent-2);
+  color: #1a1206;
+}
+
+.ann-btn__arrow {
+  display: inline-block;
+  transition: transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-btn:hover .ann-btn__arrow {
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------------
+   FORMS (contact + admin)
+   ------------------------------------------------------------ */
+.ann-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--anna-space-4);
+}
+
+.ann-form__step {
+  display: none;
+}
+
+.ann-form__step.is-active {
+  display: block;
+  animation: ann-step-in var(--anna-dur) var(--anna-ease-out);
+}
+
+@keyframes ann-step-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ann-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--anna-space-3);
+}
+
+.ann-field label {
+  font-size: var(--anna-fs-sm);
+  color: var(--anna-text-2);
+  font-family: var(--anna-font-display);
+  letter-spacing: var(--anna-tracking-mid);
+}
+
+.ann-field .req {
+  color: var(--anna-danger);
+}
+
+.ann-field input,
+.ann-field select,
+.ann-field textarea {
+  background: var(--anna-bg-2);
+  border: 1px solid var(--anna-line);
+  border-radius: var(--anna-r-sm);
+  color: var(--anna-text);
+  padding: 12px 14px;
+  font-size: var(--anna-fs-base);
+  font-family: var(--anna-font-body);
+  transition: border-color var(--anna-dur-fast) var(--anna-ease), background-color var(--anna-dur-fast) var(--anna-ease);
+  width: 100%;
+}
+
+.ann-field input:focus,
+.ann-field select:focus,
+.ann-field textarea:focus {
+  outline: 0;
+  border-color: var(--anna-accent);
+  background: var(--anna-bg-3);
+}
+
+.ann-field .hint {
+  color: var(--anna-text-3);
+  font-size: var(--anna-fs-xs);
+}
+
+.ann-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--anna-space-3);
+}
+
+.ann-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--anna-fs-sm);
+  color: var(--anna-text-2);
+  cursor: pointer;
+}
+
+.ann-radio input {
+  accent-color: var(--anna-accent);
+}
+
+.ann-form__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--anna-space-3);
+  margin-top: var(--anna-space-3);
+}
+
+.ann-terms {
+  background: var(--anna-bg-2);
+  border: 1px solid var(--anna-line);
+  border-radius: var(--anna-r-md);
+  padding: var(--anna-space-4);
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-sm);
+  line-height: var(--anna-lh-base);
+}
+
+.ann-terms h3 {
+  color: var(--anna-text);
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-base);
+  margin: 0 0 var(--anna-space-2);
+}
+
+.ann-terms ol {
+  padding-left: 1.2rem;
+  margin: 0 0 var(--anna-space-3);
+}
+
+.ann-terms li {
+  margin-bottom: 6px;
+}
+
+.ann-terms .notice {
+  color: var(--anna-accent);
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------
+   ADMIN
+   ------------------------------------------------------------ */
+.ann-admin {
+  min-height: 100vh;
+  background: var(--anna-bg);
+  color: var(--anna-text);
+  padding: var(--anna-space-6) var(--anna-gutter);
+}
+
+.ann-admin__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--anna-space-3);
+  margin-bottom: var(--anna-space-5);
+  flex-wrap: wrap;
+}
+
+.ann-admin__filters {
+  display: flex;
+  gap: var(--anna-space-2);
+  flex-wrap: wrap;
+}
+
+.ann-admin__filter {
+  padding: 8px 14px;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line);
+  background: transparent;
+  color: var(--anna-text-2);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-admin__filter.is-active,
+.ann-admin__filter:hover {
+  border-color: var(--anna-accent);
+  color: var(--anna-text);
+}
+
+.ann-admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--anna-fs-sm);
+}
+
+.ann-admin__table th,
+.ann-admin__table td {
+  text-align: left;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--anna-line);
+  vertical-align: top;
+}
+
+.ann-admin__table th {
+  color: var(--anna-text-3);
+  font-weight: 500;
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  font-size: var(--anna-fs-xs);
+}
+
+.ann-admin__table tr:hover td {
+  background: var(--anna-bg-2);
+}
+
+.ann-admin__status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--anna-r-pill);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-mid);
+  border: 1px solid var(--anna-line-2);
+}
+
+.ann-admin__status[data-status="new"] {
+  color: var(--anna-accent);
+  border-color: var(--anna-accent);
+}
+
+.ann-admin__status[data-status="read"] {
+  color: var(--anna-text-2);
+}
+
+.ann-admin__status[data-status="accepted"] {
+  color: #6cd28a;
+  border-color: #6cd28a;
+}
+
+.ann-admin__status[data-status="declined"] {
+  color: var(--anna-danger);
+  border-color: var(--anna-danger);
+}
+
+.ann-admin__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ann-admin__btn {
+  border: 1px solid var(--anna-line-2);
+  background: transparent;
+  color: var(--anna-text-2);
+  padding: 6px 10px;
+  border-radius: var(--anna-r-sm);
+  cursor: pointer;
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-mid);
+  transition: all var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-admin__btn:hover {
+  color: var(--anna-text);
+  border-color: var(--anna-text);
+}
+
+.ann-admin__drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(560px, 100vw);
+  background: var(--anna-bg-2);
+  border-left: 1px solid var(--anna-line);
+  transform: translateX(100%);
+  transition: transform var(--anna-dur) var(--anna-ease);
+  padding: var(--anna-space-5) var(--anna-space-4);
+  overflow-y: auto;
+  z-index: 9500;
+}
+
+.ann-admin__drawer.is-open {
+  transform: none;
+}
+
+.ann-admin__drawer h2 {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xl);
+  margin: 0 0 var(--anna-space-3);
+}
+
+.ann-admin__row {
+  padding: var(--anna-space-2) 0;
+  border-bottom: 1px solid var(--anna-line);
+}
+
+.ann-admin__row dt {
+  color: var(--anna-text-3);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ann-admin__row dd {
+  margin: 0;
+  color: var(--anna-text);
+  font-size: var(--anna-fs-sm);
+  line-height: var(--anna-lh-base);
+  word-break: break-word;
+}
+
+.ann-admin__login {
+  max-width: 420px;
+  margin: 15vh auto;
+  padding: var(--anna-space-5);
+  background: var(--anna-bg-2);
+  border: 1px solid var(--anna-line);
+  border-radius: var(--anna-r-lg);
+}
+
+/* ------------------------------------------------------------
+   UTILITIES
+   ------------------------------------------------------------ */
+.ann-hidden {
+  display: none !important;
+}
+
+.ann-center {
+  text-align: center;
+}
+
+.ann-muted {
+  color: var(--anna-text-2);
+}
+
+.ann-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Hero extras — pinned to the same visual slot as the heading,
+   but offset so it doesn't collide with Webflow's IX2 transform. */
+.ann-hero-extras {
+  position: absolute;
+  left: 7vw;
+  top: 55%;
+  /* sits below the heading */
+  width: min(560px, 80vw);
+  pointer-events: auto;
+}
+
+@media (max-width: 991px) {
+  .ann-hero-extras {
+    position: static;
+    left: auto;
+    top: auto;
+    margin-top: 1.5rem;
+  }
+}
+
+
+
+
+
+/* ============================================================
+   HERO — Annatoria custom
+   ============================================================ */
+.ann-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* --- Background image + veil --- */
+.ann-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ann-hero__bg-img {
+  position: absolute;
+  inset: -8% -8% -8% -8%;
+  /* oversized so parallax doesn't reveal edges */
+
+  background-image: url('./assets/mains/anna03.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  filter: saturate(0.9) contrast(1.02);
+  will-change: transform;
+}
+
+.ann-hero__bg-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 20% 30%, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.65) 55%, rgba(0, 0, 0, 0.92) 100%),
+    linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.15) 35%, rgba(10, 10, 10, 0.95) 100%);
+}
+
+
+/* --- Layout --- */
+.ann-hero__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--anna-max);
+  margin: 0 auto;
+  padding: calc(var(--anna-nav-h) + 4vh) var(--anna-gutter) 8vh;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--anna-space-6);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .ann-hero__inner {
+    grid-template-columns: 1fr;
+    gap: var(--anna-space-5);
+    padding-top: calc(var(--anna-nav-h) + 6vh);
+  }
+}
+
+.ann-hero__content {
+  max-width: 640px;
+}
+
+/* --- Eyebrow --- */
+.ann-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-text-2);
+  margin-bottom: var(--anna-space-3);
+}
+
+.ann-hero__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--anna-accent);
+  box-shadow: 0 0 12px var(--anna-accent);
+}
+
+/* --- Title --- */
+.ann-hero__title {
+  font-family: var(--anna-font-display);
+  font-size: clamp(2.4rem, 1.2rem + 5.6vw, 6.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--anna-text);
+  margin: 0 0 var(--anna-space-4);
+  text-wrap: balance;
+}
+
+/* --- Lead --- */
+.ann-hero__lead {
+  font-size: var(--anna-fs-lg);
+  line-height: 1.5;
+  color: var(--anna-text-2);
+  max-width: 52ch;
+  margin: 0 0 var(--anna-space-5);
+}
+
+/* --- CTAs --- */
+.ann-hero__ctas {
+  display: flex;
+  gap: var(--anna-space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--anna-space-6);
+}
+
+/* --- Meta strip --- */
+.ann-hero__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--anna-space-4);
+  flex-wrap: wrap;
+}
+
+.ann-hero__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ann-hero__meta-num {
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xl);
+  font-weight: 700;
+  color: var(--anna-text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.ann-hero__meta-label {
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-text-3);
+}
+
+.ann-hero__meta-sep {
+  width: 1px;
+  height: 32px;
+  background: var(--anna-line-2);
+}
+
+@media (max-width: 560px) {
+  .ann-hero__meta-sep {
+    display: none;
+  }
+
+  .ann-hero__meta {
+    gap: var(--anna-space-3);
+  }
+}
+
+/* --- Portrait --- */
+.ann-hero__portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--anna-r-lg);
+  overflow: hidden;
+  border: 1px solid var(--anna-line);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+.ann-hero__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.2s var(--anna-ease-out), filter 0.8s var(--anna-ease);
+}
+
+.ann-hero__portrait:hover img {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 900px) {
+  .ann-hero__portrait {
+    aspect-ratio: 16 / 10;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+/* --- Scroll cue --- */
+.ann-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: var(--anna-space-4);
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--anna-font-display);
+  font-size: var(--anna-fs-xs);
+  letter-spacing: var(--anna-tracking-wide);
+  text-transform: uppercase;
+  color: var(--anna-text-2);
+  text-decoration: none;
+  padding: 8px 12px;
+  transition: color var(--anna-dur-fast) var(--anna-ease), transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-hero__scroll:hover {
+  color: var(--anna-text);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.ann-hero__scroll svg {
+  animation: ann-scroll-bob 2.4s var(--anna-ease) infinite;
+}
+
+@keyframes ann-scroll-bob {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@media (max-width: 560px) {
+  .ann-hero__scroll {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   SMOOTH ANCHOR SCROLL (respects reduced motion)
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Anchor offset — so sections don't hide under the fixed nav */
+.ann-section,
+#music,
+#social,
+#moments,
+#awards,
+#events,
+#stories {
+  scroll-margin-top: 90px;
+}
+
+/* ============================================================
+   HIDE ALL LEFTOVER WEBFLOW TEMPLATE BLOCKS
+   ============================================================ */
+
+
+
+
+/* Hide leftover Webflow template blocks */
+.nav,
+.wrapper-hero,
+.second-scroll,
+.wrap-bg,
+.nav-scroll,
+.iphone__mockup,
+.wrapper_content,
+.wrap-pictures,
+.wrap-pictures.cc-mobile,
+.notch,
+.iphone-wrapper-device,
+.iphone-wrapper-device.base,
+.content__sliders,
+.wrapper.h {
+  display: none !important;
+}
+
+
+/* ============================================================
+   CLICKABILITY FIX — comprehensive
+   Several Webflow elements sit at absurd z-indexes (9,000,000+)
+   as full-viewport fixed/sticky overlays, intercepting all clicks.
+   We disable pointer-events on every decorative overlay and
+   restore them only on genuinely interactive children.
+   ============================================================ */
+
+/* 1. The full-viewport fixed hero shell — decorative */
+.wrapper-hero {
+  pointer-events: none;
+}
+
+/* Its interactive children opt back in */
+.wrapper-hero a,
+.wrapper-hero button,
+.wrapper-hero iframe,
+.wrapper-hero ._01-app-feed,
+.wrapper-hero ._01-app-feed *,
+.wrapper-hero .feed-voice-link,
+.wrapper-hero .content__sliders,
+.wrapper-hero ._w-title-feed,
+.wrapper-hero ._w-title-feed * {
+  pointer-events: auto;
+}
+
+/* 2. .nav — z-index:9,000,000, rotated 100vh×12vw strip covering the page */
+.nav {
+  pointer-events: none;
+}
+
+/* Its real link children (contact, admin-login) stay clickable */
+.nav a,
+.nav button {
+  pointer-events: auto;
+}
+
+/* 3. ._w-screen-title — z-index:15,000,000, 100vw×100vh sticky cover */
+._w-screen-title {
+  pointer-events: none;
+}
+
+/* 4. .logo-ts-2 — z-index:90,000, position:fixed top-left logo */
+/* This IS interactive (it links home), keep it clickable */
+/* .logo-ts-2 {
+  pointer-events: auto;
+} */
+
+/* 5. .second-scroll — the large parallax ticker behind the hero */
+.second-scroll {
+  pointer-events: none;
+}
+
+/* 6. .wrap-bg — decorative grid lines */
+.wrap-bg {
+  pointer-events: none;
+}
+
+/* 7. .shadow — full-width gradient overlay at bottom of viewport */
+.shadow {
+  pointer-events: none;
+}
+
+/* 8. .hero__track__heading — the giant scrolling title text */
+.hero__track__heading {
+  pointer-events: none;
+}
+
+/* 9. ann-side nav — always fully interactive */
+.ann-side,
+.ann-side * {
+  pointer-events: auto !important;
+}
+
+/* 10. All real page content — the main container is z-index:91,
+   above wrapper-hero (z-index:90), but the overlays above still
+   block it. Belt-and-braces: force all interactive elements clickable. */
+.main-container a,
+.main-container button,
+.main-container input,
+.main-container select,
+.main-container textarea,
+.ann-hero a,
+.ann-hero button,
+.ann-btn,
+.ann-social__card,
+.ann-track,
+.ann-moment,
+.ann-story,
+.ann-event,
+.ann-event__cta,
+.ann-footer a,
+.ann-footer button {
+  pointer-events: auto !important;
+  position: relative;
+}
+
+
+
+
+
+
+/* ============================================================
+   EDITORIAL / STATEMENT SECTION
+   ============================================================ */
+.ann-editorial {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 8vh var(--anna-gutter) 10vh;
+  background: #0a0a0a;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* --- Faint grid behind everything --- */
+.ann-editorial__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: calc(100% / 6) calc(100% / 4);
+  z-index: 0;
+}
+
+/* Corner labels */
+.ann-editorial__corner {
+  position: absolute;
+  font-family: var(--anna-font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.ann-editorial__corner.tl {
+  top: 24px;
+  left: 24px;
+}
+
+.ann-editorial__corner.tr {
+  top: 24px;
+  right: 24px;
+}
+
+.ann-editorial__corner.bl {
+  bottom: 24px;
+  left: 24px;
+}
+
+.ann-editorial__corner.br {
+  bottom: 24px;
+  right: 24px;
+}
+
+/* --- Left headline column --- */
+.ann-editorial__content {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  margin-top: 8vh;
+}
+
+.ann-editorial__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--anna-font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--anna-text-2);
+  margin-bottom: var(--anna-space-4);
+}
+
+.ann-editorial__dash {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.ann-editorial__headline {
+  font-family: var(--anna-font-display);
+  font-weight: 700;
+  font-size: clamp(2.8rem, 1.4rem + 6vw, 6.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  color: var(--anna-text);
+  margin: 0 0 var(--anna-space-4);
+}
+
+.ann-editorial__sub {
+  font-size: var(--anna-fs-base);
+  line-height: 1.6;
+  color: var(--anna-text-2);
+  margin: 0 0 var(--anna-space-5);
+  max-width: 36ch;
+}
+
+/* --- Photo collage (right side) --- */
+.ann-editorial__collage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 52%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ann-editorial__photo {
+  position: absolute;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  transition:
+    opacity var(--anna-dur-slow) var(--anna-ease-out),
+    transform 1s var(--anna-ease-out);
+  will-change: transform;
+}
+
+.ann-editorial__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Each photo is a different size + position */
+.photo-a {
+  top: 6%;
+  right: 22%;
+  width: 34%;
+  aspect-ratio: 3 / 4;
+  z-index: 3;
+  transform: rotate(-2deg);
+}
+
+.photo-b {
+  top: 4%;
+  right: 0;
+  width: 40%;
+  aspect-ratio: 4 / 3;
+  z-index: 2;
+  transform: rotate(1.5deg);
+}
+
+.photo-c {
+  top: 52%;
+  right: 12%;
+  width: 44%;
+  aspect-ratio: 4 / 5;
+  z-index: 4;
+  transform: rotate(-1deg);
+}
+
+/* Vertical labels on photo edges */
+.ann-editorial__tag {
+  position: absolute;
+  font-family: var(--anna-font-display);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+  padding: 8px;
+}
+
+.photo-a .ann-editorial__tag {
+  top: 12px;
+  right: 8px;
+  text-align: right;
+}
+
+.photo-b .ann-editorial__tag {
+  bottom: 12px;
+  left: 8px;
+}
+
+.photo-c .ann-editorial__tag {
+  top: 12px;
+  left: 8px;
+}
+
+/* Reveal behaviour: each photo animates from a slight offset */
+.ann-editorial__photo {
+  opacity: 1;
+}
+
+
+
+/* --- Mobile layout: stack the collage below the headline --- */
+@media (max-width: 900px) {
+  .ann-editorial {
+    padding-top: 12vh;
+    padding-bottom: 6vh;
+    min-height: auto;
+  }
+
+  .ann-editorial__collage {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    margin-top: 6vh;
+  }
+
+  .ann-editorial__content {
+    margin-top: 0;
+  }
+
+  .photo-a {
+    top: 0;
+    left: 0;
+    right: auto;
+    width: 55%;
+  }
+
+  .photo-b {
+    top: 4%;
+    right: 0;
+    left: auto;
+    width: 55%;
+  }
+
+  .photo-c {
+    top: 40%;
+    left: 18%;
+    right: auto;
+    width: 60%;
+  }
+}
+
+
+
+/* ============================================================
+   SPLIT SECTION — image/iframe + text
+   ============================================================ */
+.ann-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--anna-space-6);
+  align-items: center;
+  max-width: var(--anna-max);
+  margin: 0 auto;
+  padding: var(--anna-space-8) var(--anna-gutter);
+}
+
+.ann-split--reverse .ann-split__media {
+  order: 2;
+}
+
+.ann-split--reverse .ann-split__body {
+  order: 1;
+}
+
+@media (max-width: 900px) {
+  .ann-split {
+    grid-template-columns: 1fr;
+    gap: var(--anna-space-4);
+    padding: var(--anna-space-6) var(--anna-gutter);
+  }
+
+  .ann-split--reverse .ann-split__media,
+  .ann-split--reverse .ann-split__body {
+    order: unset;
+  }
+}
+
+.ann-split__media {
+  position: relative;
+  border-radius: var(--anna-r-lg);
+  overflow: hidden;
+  border: 1px solid var(--anna-line);
+  background: var(--anna-surface);
+  aspect-ratio: 4 / 5;
+}
+
+.ann-split__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out);
+}
+
+.ann-split__media:hover img {
+  transform: scale(1.03);
+}
+
+.ann-split__video {
+  position: absolute;
+  inset: 0;
+}
+
+.ann-split__video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.ann-split__body {
+  max-width: 560px;
+}
+
+.ann-split__body .ann-h2 {
+  margin-bottom: var(--anna-space-3);
+}
+
+.ann-split__body .ann-lead {
+  margin-bottom: var(--anna-space-4);
+}
+
+
+
+
+
+
+/* ============================================================
+   HERO HEADLINE — scroll-driven horizontal shift
+   ============================================================ */
+
+/* Prevent the browser from bailing on the transform */
+
+
+.ann-hero__title-shift {
+  will-change: transform;
+}
+
+.ann-hero__title-scroll {
+  will-change: transform;
+}
+
+.ann-hero__title {
+  transform: none;
+  /* remove the earlier translate3d(0,0,0) */
+}
+
+
+/* ============================================================
+   SCROLL CUE — floating pill, bottom-left
+   ============================================================ */
+.ann-scroll-cue {
+  position: static;
+  left: calc(var(--anna-gutter)+ 150px);
+  bottom: 24px;
+  z-index: 9500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 14px;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: rgba(10, 10, 10, 0.6);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  color: var(--anna-text);
+  font-family: var(--anna-font-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color var(--anna-dur-fast) var(--anna-ease),
+    border-color var(--anna-dur-fast) var(--anna-ease),
+    transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-scroll-cue:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: var(--anna-text);
+  transform: translateY(-2px);
+}
+
+.ann-scroll-cue:focus-visible {
+  outline: 2px solid var(--anna-accent);
+  outline-offset: 3px;
+}
+
+.ann-scroll-cue__label {
+  position: relative;
+}
+
+.ann-scroll-cue__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--anna-dur) var(--anna-ease);
+  animation: ann-cue-bob 2s var(--anna-ease) infinite;
+}
+
+.ann-scroll-cue__arrow svg {
+  display: block;
+}
+
+/* When flipped, arrow points up and label says "Top" */
+.ann-scroll-cue.is-up .ann-scroll-cue__arrow {
+  transform: rotate(180deg);
+}
+
+.ann-scroll-cue.is-up .ann-scroll-cue__arrow {
+  animation: ann-cue-bob-up 2s var(--anna-ease) infinite;
+}
+
+@keyframes ann-cue-bob {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes ann-cue-bob-up {
+
+  0%,
+  100% {
+    transform: rotate(180deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(180deg) translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ann-scroll-cue__arrow,
+  .ann-scroll-cue.is-up .ann-scroll-cue__arrow {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .ann-scroll-cue {
+    bottom: 80px;
+    /* clear the mobile bottom bar */
+    left: 16px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+
+  .ann-bottom-left {
+    left: 12px;
+    bottom: 76px;
+    /* above the mobile bottom nav */
+    gap: 8px;
+  }
+
+  .creator {
+    font-size: 9px;
+    padding: 6px 10px;
+  }
+
+  .ann-scroll-cue {
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+}
+
+
+
+
+
+
+
+
+/* ============================================================
+   BOTTOM-LEFT CLUSTER — creator badge + scroll cue
+   ============================================================ */
+.ann-bottom-left {
+  position: fixed;
+  left: var(--anna-gutter);
+  bottom: 24px;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  pointer-events: none;
+  /* container is passive */
+}
+
+.ann-bottom-left>* {
+  pointer-events: auto;
+  /* children are clickable */
+}
+
+/* ============================================================
+   CREATOR BADGE — bottom-left, sits beneath the scroll cue
+   ============================================================ */
+
+
+
+
+.creator {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--anna-r-md);
+  font-family: var(--anna-font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--anna-text-3);
+  text-decoration: none;
+  background: rgba(10, 10, 10, 0.4);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--anna-line);
+  transition: color var(--anna-dur-fast) var(--anna-ease), border-color var(--anna-dur-fast) var(--anna-ease);
+  white-space: nowrap;
+}
+
+
+
+.creator:hover {
+  color: var(--anna-text);
+  border-color: var(--anna-line-2);
+}
+
+
+/* Mobile: tuck it above the bottom nav bar, below the scroll cue */
+@media (max-width: 767px) {
+  .creator {
+    bottom: 80px;
+    /* above the mobile bottom bar */
+    left: 16px;
+    font-size: 9px;
+    padding: 6px 10px;
+  }
+}
+
+/* ============================================================
+   FIXED BRAND LOGO — top-left, follows on scroll
+   ============================================================ */
+.ann-brand-fixed {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 9500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--anna-r-md);
+  background: rgba(10, 10, 10, 0.55);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--anna-line);
+  text-decoration: none;
+  transition:
+    background-color var(--anna-dur-fast) var(--anna-ease),
+    border-color var(--anna-dur-fast) var(--anna-ease),
+    transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-brand-fixed img {
+  display: block;
+  height: 28px;
+  width: auto;
+  max-height: 28px;
+  object-fit: contain;
+  opacity: 0.92;
+  transition: opacity var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-brand-fixed:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: var(--anna-line-2);
+  transform: translateY(-1px);
+}
+
+.ann-brand-fixed:hover img {
+  opacity: 1;
+}
+
+/* Mobile: smaller + tight to edge */
+@media (max-width: 767px) {
+  .ann-brand-fixed {
+    top: 14px;
+    left: 14px;
+    padding: 8px 10px;
+  }
+
+  .ann-brand-fixed img {
+    height: 22px;
+    max-height: 22px;
+  }
+}
+
+
+/* Entrance */
+.ann-brand-fixed {
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: ann-brand-in 700ms var(--anna-ease-out) 200ms forwards;
+}
+
+@keyframes ann-brand-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Shrinks slightly once you scroll past 40px */
+.ann-brand-fixed.is-scrolled {
+  padding: 8px 12px;
+}
+
+.ann-brand-fixed.is-scrolled img {
+  height: 22px;
+  max-height: 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ann-brand-fixed {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+
+
+/* ============================================================
+   MOBILE MENU — floating button + full-screen overlay
+   ============================================================ */
+
+/* Button: hidden on desktop */
+.ann-menu-btn {
+  display: none;
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 9600;
+  /* above rail (9000) and brand (9500) */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: rgba(10, 10, 10, 0.6);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  cursor: pointer;
+  transition: background-color var(--anna-dur-fast) var(--anna-ease),
+    border-color var(--anna-dur-fast) var(--anna-ease),
+    transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-menu-btn:hover {
+  background: rgba(20, 20, 20, 0.85);
+  border-color: var(--anna-text);
+}
+
+.ann-menu-btn:focus-visible {
+  outline: 2px solid var(--anna-accent);
+  outline-offset: 3px;
+}
+
+.ann-menu-btn span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  margin: 5px auto;
+  background: var(--anna-text);
+  transition: transform var(--anna-dur) var(--anna-ease),
+    opacity var(--anna-dur-fast) var(--anna-ease);
+}
+
+/* Morph to ✕ when open */
+.ann-menu-btn.is-open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.ann-menu-btn.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.ann-menu-btn.is-open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* Overlay menu — only active below 768px */
+@media (max-width: 767px) {
+  .ann-menu-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Turn the side rail into a full-screen overlay */
+  .ann-side {
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    border: 0;
+    background: var(--anna-bg);
+    z-index: 9500;
+    /* below the button, above everything else */
+    transform: translateY(100%);
+    /* hidden off-screen */
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--anna-dur-slow) var(--anna-ease-out),
+      opacity var(--anna-dur) var(--anna-ease);
+  }
+
+  .ann-side.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .ann-side__inner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--anna-space-5);
+    padding: 80px 24px 40px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .ann-side__nav {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--anna-space-4);
+    margin: 0;
+  }
+
+  /* Reset the vertical-rail styling for mobile */
+  .ann-side__link {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    padding: 12px 8px;
+
+    /* Stagger-in state — hidden until .is-open */
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms var(--anna-ease-out),
+      transform 500ms var(--anna-ease-out),
+      color var(--anna-dur-fast) var(--anna-ease);
+  }
+
+  .ann-side.is-open .ann-side__link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(1) {
+    transition-delay: 80ms;
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(2) {
+    transition-delay: 140ms;
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(3) {
+    transition-delay: 200ms;
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(4) {
+    transition-delay: 260ms;
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(5) {
+    transition-delay: 320ms;
+  }
+
+  .ann-side.is-open .ann-side__link:nth-child(6) {
+    transition-delay: 380ms;
+  }
+
+  /* Underline is horizontal again on mobile */
+  .ann-side__link::after {
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 40px;
+    height: 1px;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+  }
+
+  .ann-side__link:hover::after,
+  .ann-side__link[aria-current="page"]::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  /* Foot: Book + Admin stack below the links */
+  .ann-side__foot {
+    flex-direction: row;
+    gap: var(--anna-space-3);
+    margin: 0;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms var(--anna-ease-out) 420ms,
+      transform 500ms var(--anna-ease-out) 420ms;
+  }
+
+  .ann-side.is-open .ann-side__foot {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ann-side__cta {
+    writing-mode: horizontal-tb;
+    transform: none;
+    padding: 14px 22px;
+    font-size: 12px;
+  }
+
+  .ann-side__cta:hover {
+    transform: translateY(-1px);
+  }
+
+  .ann-side__link.small {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
+  /* Hide the desktop bottom-left cluster behind the overlay */
+  .ann-bottom-left {
+    display: none;
+  }
+}
+
+/* Respect reduced motion on the mobile menu */
+@media (prefers-reduced-motion: reduce) {
+
+  .ann-side,
+  .ann-side__link,
+  .ann-side__foot {
+    transition: none !important;
+  }
+
+  .ann-side__link,
+  .ann-side__foot {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+
+
+
+/* ============================================================
+   BACK BUTTON — matches the scroll cue / brand pill style
+   ============================================================ */
+.ann-back {
+  position: fixed;
+  top: 30px;
+  left: 305px;
+  z-index: 9600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 14px;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: rgba(10, 10, 10, 0.6);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  color: var(--anna-text);
+  font-family: var(--anna-font-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color var(--anna-dur-fast) var(--anna-ease),
+    border-color var(--anna-dur-fast) var(--anna-ease),
+    transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-back:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: var(--anna-text);
+  transform: translateY(-2px);
+}
+
+.ann-back:focus-visible {
+  outline: 2px solid var(--anna-accent);
+  outline-offset: 3px;
+}
+
+.ann-back__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--anna-dur) var(--anna-ease);
+}
+
+.ann-back__arrow svg {
+  display: block;
+}
+
+.ann-back:hover .ann-back__arrow {
+  transform: translateX(-4px);
+}
+
+@media (max-width: 767px) {
+  .ann-back {
+    top: 100px;
+    left: 14px;
+    padding: 8px 14px 8px 12px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .ann-back {
+    top: 100px;
+    left: 25px;
+    padding: 8px 14px 8px 12px;
+    font-size: 10px;
+  }
+}
+
+
+
+/* ============================================================
+   PUBLIC THEME TOGGLE — top-right pill
+   ============================================================ */
+.ann-theme-btn {
+  position: fixed;
+  top: 24px;
+  right: calc(var(--anna-side-w) + 24px);
+  /* clears the side rail */
+  z-index: 9600;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--anna-r-pill);
+  border: 1px solid var(--anna-line-2);
+  background: rgba(10, 10, 10, 0.6);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  color: var(--anna-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--anna-dur-fast) var(--anna-ease),
+    border-color var(--anna-dur-fast) var(--anna-ease),
+    transform var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-theme-btn:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: var(--anna-text);
+  transform: translateY(-2px);
+}
+
+.ann-theme-btn:focus-visible {
+  outline: 2px solid var(--anna-accent);
+  outline-offset: 3px;
+}
+
+.ann-theme-btn__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  transition: transform var(--anna-dur-slow) var(--anna-ease-out),
+    opacity var(--anna-dur-fast) var(--anna-ease);
+}
+
+.ann-theme-btn__icon.moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.ann-theme-btn__icon.sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+}
+/************************************************************************************/
+/* Light theme: swap icon */
+/* body.anna-theme-light .ann-theme-btn__icon.moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+
+body.anna-theme-light .ann-theme-btn__icon.sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+} */
+/*--------------------------------------------------------------*/
+/* Light theme: pill background needs to flip */
+body.anna-theme-light .ann-theme-btn {
+  background: rgba(245, 242, 236, 0.75);
+  border-color: var(--anna-line-2);
+}
+
+body.anna-theme-light .ann-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--anna-text);
+}
+
+@media (max-width: 767px) {
+  .ann-theme-btn {
+    top: 14px;
+    right: 70px;
+    /* clears the mobile menu button */
+    width: 40px;
+    height: 40px;
+  }
+
+  .ann-theme-btn__icon {
+    width: 18px;
+    height: 18px;
+  }
+}

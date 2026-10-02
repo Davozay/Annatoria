@@ -1,0 +1,15 @@
+# Annatoria — robots.txt
+# Allow public pages, exclude admin.
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /Blessing/admin/
+Disallow: /Blessing/admin.html
+
+# Block the login page from indexed search results
+Disallow: /admin-login
+
+# Sitemap location
+Sitemap: https://annatoria.com/sitemap.xml

@@ -12,4 +12,4 @@ Disallow: /Blessing/admin.html
 Disallow: /admin-login
 
 # Sitemap location
-Sitemap: https://annatoria.com/sitemap.xml
+Sitemap: https://annatoria.vercel.app/sitemap.xml
